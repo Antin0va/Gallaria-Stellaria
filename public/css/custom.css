@@ -1,0 +1,926 @@
+/* source/css/custom.css */
+
+/* 1. 引入 Google Fonts */
+/* Michroma: 完美的宽体科幻英文字体 (替代 Novecento) */
+/* Noto Sans SC: 思源黑体 (包含 400常规, 500中等, 700粗, 900极粗) */
+@import url('https://fonts.googleapis.com/css2?family=Michroma&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+/* 强制背景图固定，不随滚动条滚动，制造视差效果 */
+body {
+  background-attachment: fixed !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
+
+
+#page-header {
+  /* 强制拉伸图片以覆盖整个区域，不管屏幕多大 */
+  background-size: cover !important;
+  /* 禁止重复平铺 */
+  background-repeat: no-repeat !important;
+  /* 图片始终居中显示 */
+  background-position: center center !important;
+}
+
+/* source/css/custom.css */
+
+/* ============================================================
+   1. 全局变量定义 (相当于 C++ 的 const header)
+   ============================================================ */
+:root {
+  /* --- 基础环境色 (Base Environment) --- */
+  /* 页面背景：米黄 */
+  --global-bg: #fff6e4;       
+  /* 背景纹理/分割线：*/
+  --global-line: #faf0d5;     
+  
+  /* --- 卡片对象属性 (Card Object Properties) --- */
+  /* 卡片背景：你说要米黄色，如果和背景一样，就靠边框区分 */
+  --card-bg: #faf0d5;         
+  /* 卡片边框：灰黑 (Outline) */
+  --card-border: #000000;     
+  
+  /* --- 文字颜色 (Text Colors) --- */
+  /* 逻辑修正：因为背景是浅色(米黄)，文字必须是深色才能看清 */
+  /* 之前是深底白字，现在我们要反过来：浅底深字 */
+  --font-color: #323232;      
+  
+  /* --- 灵活使用的功能色 (Utility Colors) --- */
+  /* 你定义的“绿、橙、红、黄”工具箱 */
+  --color-green: #86c1af;
+  --color-orange: #f45629;
+  --color-yellow: #eea93c;
+  --color-red: #9a2d28;
+  --color-olive: #beca38; /* 橄榄色，你之前提到的底边色 */
+
+  /* --- 字体系统 --- */
+  /* 标题字体栈：先看有没有 Michroma，没有就用本地无衬线 */
+  /* 中文部分：使用 Noto Sans SC */
+  --font-heading: 'Michroma', 'Noto Sans SC', sans-serif;
+  
+  /* 正文字体栈：保证易读性 */
+  --font-body: 'Noto Sans SC', sans-serif;
+
+  /* --- 【新功能】边框粗细控制器 --- */
+  /* 你可以在这里单独修改每一条边的粗细 */
+  --border-top-w: 20px;    /* 上边框粗细 */
+  --border-right-w: 8px;  /* 右边框粗细 */
+  --border-bottom-w: 0px; /* 底边框粗细 (设为0，留给彩条) */
+  --border-left-w: 8px;   /* 左边框粗细 */
+
+  /* --- 拼色底边数组 (Bottom Bar Array) --- */
+  /* 我们把底边的三个颜色预定义好，方便后面调用 */
+  --bar-1: var(--color-yellow);
+  --bar-2: var(--color-green);
+  --bar-3: var(--color-red);
+}
+
+
+/* ============================================================
+   1. 全局背景设置 (Global Background)
+   ============================================================ */
+body {
+  /* 【清理】: 首先告诉浏览器，不要加载任何图片背景 */
+  /* none 表示“无”，!important 表示“强制执行，谁说都不好使” */
+  /* background-image: none !important; */
+  
+  /* 【填色】: 调用我们在 :root 里定义的 --global-bg (#fff6e4) */
+  background-color: var(--global-bg) !important;
+  
+  /* 【兜底文字颜色】: 设置 body 的默认文字颜色 */
+  /* 虽然卡片里会重新设置，但防止有漏网之鱼（比如页脚文字）看不清 */
+  /* 这里调用 --font-color (#323232 深灰) */
+  color: var(--font-color) !important;
+}
+
+/* ============================================================
+   2. 卡片通用样式 (The Card Object)
+   ============================================================ */
+
+/* 【选择器组 (Selector Group)】 
+   相当于选中了所有继承自 Card 类的实例
+*/
+#aside-content .card-widget,                 /* 侧边栏的小方块 */
+#recent-posts > .recent-post-item,           /* 首页文章卡片 */
+.layout > .recent-posts .pagination > *:not(.space), /* 分页按钮 (1, 2, 下一页) */
+.layout > div:first-child:not(.recent-posts), /* 文章详情页的主体容器 */
+#page-header.not-top-img #nav {              /* 没有头图时的顶部导航栏 */
+    
+    /* 【定位基准】 */
+    /* 为了后面加“拼色底边”做准备，必须设为 relative */
+    position: relative !important;
+    
+    /* 【实体填充】 */
+    background: var(--card-bg) !important;
+    color: var(--font-color) !important;
+    
+    /* 【边框设计 (Border)】 */
+    /* 2px 宽的实线，颜色是你的灰黑色 #323232 */
+    /* 1. 先给四条边都加上 2px 的实线边框 */
+    /* --- 【关键修改】独立边框设置 --- */
+    /* 1. 定义边框风格和颜色 */
+    border-style: solid !important;
+    border-color: var(--card-border) !important;
+    
+    /* 2. 分别引用四个方向的粗细变量 */
+    border-top-width: var(--border-top-w) !important;
+    border-right-width: var(--border-right-w) !important;
+    border-bottom-width: var(--border-bottom-w) !important;
+    border-left-width: var(--border-left-w) !important;
+    
+    /* 2. 【关键一步】把底边框“拆掉” */
+    border-bottom: none !important;
+    
+    /* 【圆角 (Radius)】 */
+    /* 4px 微圆角，既不锐利伤手，又保留工业感 */
+    border-radius: 0px !important;
+
+    /* --- 【关键修改】允许溢出 --- */
+    /* 删除 overflow: hidden，让伪元素可以盖在边框上 */
+    overflow: visible !important;
+    
+    /* 【阴影 (Shadow)】 */
+    /* 参数：X偏移4px, Y偏移4px, 模糊0px, 颜色淡黑 */
+    /* 设置模糊为 0px 是关键！这创造了“硬阴影”，像漫画书一样的质感 */
+    box-shadow: 0px 0px 0px rgba(50, 50, 50, 0.15) !important;
+    
+    /* --- 其他细节 --- */
+    /* 调整内边距，给顶部装饰和底部彩条留出空间 */
+    padding-top: 20px !important; 
+    padding-bottom: 20px !important;
+    
+    /* 【动效准备】 */
+    transition: all 0.3s;
+}
+
+/* 【交互 (Interaction)】 */
+/* ============================================================
+   【交互优化】悬停特效：向上悬浮 + 生成橄榄绿底座
+   ============================================================ */
+
+/* 1. 卡片本体的动作 */
+#aside-content .card-widget:hover, 
+#recent-posts > .recent-post-item:hover {
+    
+    /* 【修改动作】向上平移 6px */
+    transform: translateY(-6px);
+    
+    /* 【修改阴影】让原有的黑色硬阴影变得更远，增强悬浮感 */
+    /* 从 4px 4px 变为 8px 8px */
+    /* box-shadow: 8px 8px 0px rgba(0,0,0,0.2) !important; */
+}
+
+/* ============================================================
+   3. 底部拼色条装饰 (覆盖边框版)
+   ============================================================ */
+#aside-content .card-widget::after, 
+#recent-posts > .recent-post-item::after,
+.layout > .recent-posts .pagination > *:not(.space)::after,
+.layout > div:first-child:not(.recent-posts)::after,
+#page-header.not-top-img #nav::after {
+    content: "";
+    position: absolute;
+    
+    /* 高度 */
+    height: 10px;
+
+    /* --- 【关键修改】负定位实现覆盖 --- */
+    /* 让底部定位在距离内容区底部负值的位置，正好盖住可能存在的底边框区域 */
+    bottom: -6px; 
+    
+    /* 让左右两边向外扩展，盖住左右边框 */
+    /* 这里的数值需要和你的左右边框粗细匹配，设大一点也没关系 */
+    left: -8px;
+    right: -8px;
+    
+    /* 拼色渐变 (保持不变) */
+    background: linear-gradient(to right, 
+        var(--color-green) 0%, var(--color-green) 33.33%, 
+        var(--color-yellow) 33.33%, var(--color-yellow) 66.66%, 
+        var(--color-red) 66.66%, var(--color-red) 100%
+    );
+    
+    /* 确保在最上层 */
+    z-index: 10;
+    /* 也是直角 */
+    border-radius: 0; 
+    pointer-events: none;
+    /* 【新增】添加过渡动画，让影子生成的过程有动效 */
+    transition: all 0.3s;
+}
+
+/* --- 【核心新代码】父元素悬停时，改变子元素(彩条)的样式 --- */
+/* 逻辑翻译：当卡片(.card-widget)被悬停(:hover)时，它的伪元素(::after)应该变成什么样 */
+#aside-content .card-widget:hover::after, 
+#recent-posts > .recent-post-item:hover::after,
+.layout > .recent-posts .pagination > *:not(.space)::hover::after,
+.layout > div:first-child:not(.recent-posts)::hover::after,
+#page-header.not-top-img #nav:hover::after {
+    
+    /* 利用硬投影生成橄榄绿横条 */
+    /* 语法：X偏移 Y偏移 模糊半径 扩展半径 颜色 */
+    box-shadow: 
+        0px        /* X方向不动 */
+        20px       /* Y方向向下偏移 10px (刚好露出在彩条下面) */
+        0px        /* 模糊为0，这是硬实线，不是影子 */
+        4px        /* 【关键】扩展半径 4px。让这个影子比本体四周都大一圈，实现“略微超出” */
+        var(--color-olive); /* 颜色 */
+}
+
+/* ============================================================
+   4. 右上角机械圆点装饰 (Title Bar Buttons)
+   ============================================================ */
+#aside-content .card-widget::before, 
+#recent-posts > .recent-post-item::before,
+.layout > .recent-posts .pagination > *:not(.space)::before,
+.layout > div:first-child:not(.recent-posts)::before {
+    
+    content: "";
+    position: absolute;
+    
+    /* --- 【核心修改 1：负坐标定位】 --- */
+    /* 向上移动，让它“骑”在 24px 厚的标题栏中间 */
+    /* 计算逻辑：大约是负的(标题栏高度一半 + 圆点自身高度一半) */
+    top: -16px; 
+    
+    /* 靠右定位，留一点边距 */
+    right: 0px;
+    
+    /* --- 绘制本体原型 (最右边的圆点) --- */
+    width: 7px;
+    height: 7px;
+    background: var(--card-bg);
+     /* 镂空 */
+    border-radius: 50%;
+    
+    /* --- 【核心修改 2：颜色反转】 --- */
+    /* 为了在深色标题栏上显眼，边框要改成米黄色背景色 */
+    border: 2px solid var(--card-bg); 
+    
+    /* --- 影分身之术 --- */
+    /* 投影的颜色也要跟着改成米黄色 */
+    box-shadow: -14px 0 0 0 var(--card-bg), 
+                -28px 0 0 0 var(--card-bg);
+                
+    /* 确保在最上层，盖住边框 */
+    z-index: 20;
+    /* 防止鼠标点到它们 */
+    pointer-events: none;
+}
+
+/* ============================================================
+   5. 布局间距微调 (Layout Spacing)
+   ============================================================ */
+
+/* 调整侧边栏卡片之间的垂直距离 */
+#aside-content .card-widget {
+    /* 默认通常是 20px。*/
+    /* 考虑到你的卡片底部有彩条(10px) + 悬停生成的橄榄条(又延伸了4px) + 阴影 */
+    /* 建议设置为 35px 到 40px，给视觉留出呼吸感 */
+    margin-bottom: 30px !important;
+}
+
+/* (可选) 如果觉得第一个卡片离顶部太近，也可以加一点上边距 */
+/* #aside-content { padding-top: 10px !important; } */
+
+/* ============================================================
+   6. 侧边栏头像特调 (双重锁定静止版)
+   ============================================================ */
+
+/* 1. 锁定头像的外框容器 */
+body #aside-content .card-info .avatar-img {
+    /* 边框样式 */
+    border: 3px solid var(--color-yellow) !important;
+    border-radius: 4px !important;
+    
+    /* 禁止外框旋转 */
+    transform: none !important;
+    transition: border-color 0.4s ease-in-out !important;
+}
+
+/* 2. 锁定鼠标悬停时的外框 */
+body #aside-content .card-info .avatar-img:hover {
+    /* 悬停时只变色，不动 */
+    border-color: var(--color-red) !important;
+    transform: none !important;
+}
+
+/* 3. 【新增关键】锁定里面的图片本体！ */
+/* 截图里显示的真凶就是它，我们要把它的 transform 禁掉 */
+body #aside-content .card-info .avatar-img img {
+    /* 杀掉旋转动画 */
+    transform: none !important;
+    -webkit-transform: none !important;
+    
+    /* 杀掉过渡时间，让它想转也转不起来 */
+    transition: none !important; 
+}
+
+/* 4. 防止鼠标悬停时图片自己转 */
+body #aside-content .card-info .avatar-img:hover img {
+    transform: none !important;
+}
+
+/* ============================================================
+   7. 全局排版系统 (Typography System)
+   ============================================================ */
+
+/* 1. 全局正文 (Body Text) */
+body {
+    /* 使用常规粗细的思源黑体，保证阅读舒适 */
+    font-family: var(--font-body) !important;
+    font-weight: 500 !important; /* Regular */
+    line-height: 1.6 !important; /* 增加行高，让文字呼吸 */
+    /* --- 【核心修改】调整字号 --- */
+    /* 浏览器默认通常是 16px。建议尝试 18px 或 19px */
+    font-size: 16px !important; 
+}
+
+/* 2. 文章详情页正文 (Article Content) - 放大！ */
+/* 这是你最想变大的部分 */
+#article-container {
+    font-size: 17px !important;  /* 放大到 18px */
+    line-height: 1.7 !important; /* 行高配合增加，防止拥挤 */
+}
+
+/* 3. 首页文章摘要 (Index Summary) - 适中 */
+.recent-post-content {
+    font-size: 16px !important;  /* 保持标准，或者 15px */
+    line-height: 1.6 !important;
+}
+
+/* 4. 侧边栏 (Aside) - 缩小/精致化 */
+/* 选中侧边栏的所有文字 */
+#aside-content {
+    font-size: 14px !important; /* 设置为 14px，更像精密的仪表盘参数 */
+    line-height: 1.5 !important;
+}
+
+/* 特别修正：侧边栏的标题 (如 "简介", "公告") */
+#aside-content .card-widget .item-headline {
+    font-size: 16px !important; /* 标题稍微大一点点 */
+    font-weight: bold !important;
+}
+
+
+/* 2. 标题系统 (H1 - H6) - 重型工业风 */
+h1, h2, h3, h4, h5, h6, 
+#site-title, /* 左上角 LOGO 文字 */
+.site-name, 
+.article-title, /* 文章标题 */
+.author-info-name { /* 侧边栏名字 */
+    
+    font-family: var(--font-heading) !important;
+    
+    /* 关键：强制使用 900 (Black) 字重，实现你要的“厚重感” */
+    font-weight: 900 !important; 
+    
+    /* 稍微把字间距拉开一点，这是宽体排版的精髓 */
+    letter-spacing: -1px !important;
+    
+    
+
+    /* 英文转大写 (可选)：很多工业风标题都是全大写的 */
+    text-transform: uppercase;
+}
+
+/* 3. 侧边栏导航菜单 (Menu) */
+#aside-content .card-content, 
+#nav .menus_item {
+    font-family: var(--font-heading) !important;
+    font-weight: 700 !important; /* 菜单稍微细一点 (Bold) */
+    letter-spacing: 0.5px;
+}
+
+/* 4. 数字与元数据 (日期、标签) */
+/* 让它们看起来像仪表盘读数 */
+.post-meta__date, 
+.post-meta__categories, 
+.card-info-data-count {
+    font-family: 'Michroma', monospace !important; 
+    font-size: 0.85em !important;
+}
+
+
+
+/* ============================================================
+   8. 引用块样式特调 (Blockquote Override)
+   ============================================================ */
+
+/* 覆盖默认的蓝色引用块 */
+#article-container blockquote {
+    /* 背景：使用极淡的橄榄绿，或者你的卡片背景色 */
+    background-color: rgba(190, 202, 56, 0.1) !important;
+    
+    /* 左边框：使用你的橄榄绿变量 */
+    border-left: 5px solid var(--color-olive) !important;
+    
+    /* 文字颜色：使用深灰 */
+    color: var(--font-color) !important;
+    
+    /* 变成直角，符合整体风格 */
+    border-radius: 0 !important;
+    
+    /* (可选) 加一个深色细边框 */
+    border: 1px solid var(--color-olive) !important;
+    border-left-width: 6px !important; /* 左边加粗 */
+}
+
+/* 强行修改引用块内文字的颜色 (防止主题覆盖) */
+#article-container blockquote p {
+    color: var(--font-color) !important;
+    font-family: 'Consolas', monospace; /* 使用代码字体，像打印出来的字 */
+}
+
+/* ============================================================
+   10. 表格样式特调 (Data Table - Industrial Report)
+   ============================================================ */
+
+#article-container table {
+    /* 1. 外框：使用你的深灰/黑边框色，加粗 */
+    border: 2px solid var(--card-border) !important;
+    
+    /* 2. 直角设计 */
+    border-radius: 0 !important;
+    
+    /* 3. 消除单元格之间的空隙，让线条紧贴 */
+    border-spacing: 0;
+    border-collapse: collapse;
+    
+    width: 100%;
+    margin: 20px 0;
+}
+
+/* --- 表头 (Header) --- */
+#article-container table th {
+    /* 反色设计：黑底白字 */
+    background-color: var(--card-border) !important; 
+    color: var(--global-bg) !important; /* 米黄字 */
+    
+    /* 边框 */
+    border: 1px solid var(--card-border) !important;
+    
+    /* 字体 */
+    font-family: var(--font-heading) !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px;
+}
+
+/* --- 单元格 (Body) --- */
+#article-container table td {
+    /* 线条颜色：使用深色，清晰可见 */
+    border: 1px solid var(--card-border) !important;
+    
+    color: var(--font-color) !important;
+    padding: 10px;
+}
+
+/* --- 隔行变色 (Zebra) --- */
+/* 让偶数行稍微变暗一点点，增加可读性 */
+#article-container table tr:nth-child(even) {
+    background-color: rgba(0,0,0,0.05) !important;
+}
+
+/* ============================================================
+   11. 终端光标闪烁动画 (Terminal Cursor Blink)
+   ============================================================ */
+.terminal-cursor {
+    display: inline-block;
+    margin-left: 5px;
+    font-weight: bold;
+    color: var(--color-orange); /* 跟随警告色 */
+    animation: blink-cursor 1s infinite step-end; /* step-end 让闪烁更像机器 */
+}
+
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ============================================================
+   13. 终端启动加载页 (Boot Loader)
+   ============================================================ */
+
+/* 1. 容器与背景 */
+#rhine-loader {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: var(--global-bg); /* 米黄底色 */
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 消失动画：向上揭开 */
+    transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+/* 2. 消失状态 */
+#rhine-loader.loader-hide {
+    transform: translateY(-100%); /* 向上移出 */
+    pointer-events: none;
+}
+
+/* 3. 内容容器 (放大) */
+.loader-content {
+    width: 500px; /* 宽度从 300 改为 500，更大气 */
+    text-align: center;
+}
+
+/* (可选) Logo 样式保持不变，或者跟随放大 */
+.loader-logo {
+    width: 100px; height: 100px; /* 稍微放大 */
+    margin-bottom: 30px;
+    border-radius: 12px;
+    /* 初始边框也是灰黑色 */
+    /* 【修改】去掉边框 */
+    border: none !important;
+    transition: border-color 0.3s;
+}
+
+/* 4. 文字样式 (初始状态) */
+.loader-text {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    
+    /* 【修改】初始颜色：灰黑色 */
+    color: var(--card-border); 
+    
+    /* 【修改】字号放大 */
+    font-size: 24px; 
+    letter-spacing: 4px;
+    margin-bottom: 15px;
+    
+    /* 颜色过渡动画 */
+    transition: color 0.3s;
+}
+
+/* 5. 进度条轨道 */
+.progress-bar-track {
+    width: 100%;
+    height: 12px; /* 【修改】变厚，更有分量 */
+    background: rgba(0,0,0,0.1);
+    border-radius: 0; /* 直角，工业感 */
+    /* 给轨道也加个黑框 */
+    border: 2px solid var(--card-border);
+    padding: 2px; /* 内衬间距 */
+}
+
+/* 6. 进度条填充 (初始状态) */
+.progress-bar-fill {
+    height: 100%;
+    /* 【修改】初始颜色：灰黑色 */
+    background: var(--card-border);
+    width: 0%;
+    
+    /* 【修改】动画时长改为 2s */
+    animation: progress-run 2s linear forwards; 
+    transition: background-color 0.3s;
+}
+
+/* --- 关键帧 --- */
+@keyframes progress-run {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+/* ============================================================
+   【新增】加载完成状态 (变身橄榄绿)
+   JS 会在 2s 后给容器加上这个 .loader-success 类名
+   ============================================================ */
+
+/* 文字变绿 */
+#rhine-loader.loader-success .loader-text {
+    color: var(--color-olive) !important;
+    text-shadow: 0 0 10px rgba(190, 202, 56, 0.5); /* 加一点发光 */
+}
+
+/* 进度条变绿 */
+#rhine-loader.loader-success .progress-bar-fill {
+    background-color: var(--color-olive) !important;
+    box-shadow: 0 0 15px var(--color-olive); /* 能量充满的发光感 */
+}
+
+
+
+/* 4. 文字样式 */
+.loader-text {
+    /* ... 原有的字体、颜色、字号设置保持不变 ... */
+    font-family: var(--font-heading);
+    font-weight: 900;
+    color: var(--card-border); 
+    font-size: 24px; 
+    letter-spacing: 4px;
+    margin-bottom: 15px;
+    transition: color 0.3s; /* 颜色过渡 */
+
+    /* 【新增】保留你的鬼畜闪烁动画 */
+    /* 0.1s 快速闪烁，infinite 无限循环，alternate 忽明忽暗 */
+    animation: text-blink 0.1s infinite alternate;
+}
+
+/* 【新增】闪烁的关键帧 */
+@keyframes text-blink {
+    0% { opacity: 1; }
+    100% { opacity: 0.7; } /* 不完全消失，保留一点残影，更有CRT显示器的感觉 */
+}
+/* ============================================================
+   14. 网页内容入场动画 (Content Entry)
+   ============================================================ */
+
+/* 选中整个网页的主体容器 */
+.is-loading-page #body-wrap {
+    /* animation-name: content-in;
+       animation-duration: 0.8s;  (上浮动作本身的耗时)
+       animation-timing-function: ease-out;
+       animation-delay: 2.5s;     (关键！等待加载页跑完逻辑的时间：2s进度 + 0.5s展示)
+       animation-fill-mode: backwards; (关键！在等待的2.5s里，保持 opacity:0 的状态，防止穿帮)
+    */
+    animation: content-in 0.8s ease-out 2.5s backwards;
+}
+
+/* 定义简单的上浮淡入关键帧 */
+/* 注意：这里不需要写 50% 了，因为等待时间已经由 animation-delay 控制了 */
+@keyframes content-in {
+    0% { 
+        opacity: 0; 
+        transform: translateY(30px); /* 从下方 30px 处开始浮出 */
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* ============================================================
+   15. 双语标题排版 (Dual Language Headings) - 强制位移版
+   ============================================================ */
+
+h1 .sub, h2 .sub, h3 .sub, h4 .sub, h5 .sub, h6 .sub {
+    /* 1. 基础样式 */
+    display: block !important; /* 必须是块级元素才能换行 */
+    font-family: 'Orbitron', sans-serif !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.5em; 
+    color: var(--color-orange); 
+    opacity: 0.8;
+    letter-spacing: 2px;
+    line-height: 1 !important; /* 自身的行高设为最小，防止自己占位太大 */
+    
+    /* 2. 【核心修改】开启相对定位 */
+    position: relative !important;
+    
+    /* 3. 【核心修改】向上位移 */
+    /* 使用 top 为负值，直接向上“飞” */
+    /* 试着调整这个数字：-10px, -15px, -20px */
+    top: -5px !important; 
+    
+    /* 4. 修正下方的空白 */
+    /* 因为向上飞了，下面会留出空隙，用负 margin 把下面的内容拉上来 */
+    margin-bottom: -5px !important; 
+}
+
+/* ============================================================
+   16. 技能库存清单 (Skill Inventory) - 单列仪表板版
+   ============================================================ */
+
+/* 1. 容器：强制单列布局 */
+.skill-box {
+    display: grid;
+    /* 【核心修改】只设 1 列，占满宽度 */
+    grid-template-columns: 1fr; 
+    gap: 15px; /* 模块之间的间距 */
+    margin-top: 20px;
+}
+
+/* 2. 卡片主体：长条形的仪表板 */
+.skill-card {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    
+    /* 【背景】比大背景稍深一点的米色，形成层次 */
+    background: var(--global-bg);
+    
+    /* 【边框】加上你想要的深灰外框 */
+    border: 1px solid var(--card-border);
+    
+    /* 左侧彩色指示条 */
+    border-left: 6px solid #ccc;
+    
+    padding: 15px 20px;
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+/* 3. 悬停交互 */
+.skill-card:hover {
+    /* 向右滑动一点点，像抽屉一样 */
+    transform: translateX(5px);
+    /* 边框变色，背景变亮 */
+    background: #fff;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+}
+
+/* 4. 图标区域 */
+.skill-icon {
+    font-size: 24px;
+    margin-right: 20px;
+    width: 40px;
+    text-align: center;
+    flex-shrink: 0; /* 防止图标被压扁 */
+}
+
+/* 5. 信息区域 */
+.skill-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* 技能名称 */
+.skill-name {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* --- 进度条 (保留长条设计) --- */
+.skill-progress {
+    width: 100%;
+    height: 8px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 2px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+.skill-bar {
+    height: 100%;
+    border-radius: 2px;
+    /* 这里不需要写 transition，HTML 里的 style 会生效 */
+    /* 如果你想加加载动画，可以用 width: 0 -> 100% 的 keyframes，
+       但为了简单兼容，直接利用 transition 配合 HTML 宽度即可 */
+}
+
+/* 熟练度标签 */
+.skill-tag {
+    font-family: 'Consolas', monospace;
+    font-size: 0.75em;
+    color: #777;
+    text-transform: uppercase;
+    /* 让文字两端对齐：左边是熟练度，右边是百分比 */
+    display: flex;
+    justify-content: space-between;
+}
+
+/* --- 颜色系统 (保持不变) --- */
+.skill-card.orange { border-left-color: var(--color-orange); }
+.skill-card.orange .skill-icon { color: var(--color-orange); }
+.skill-card.orange .skill-bar { background: var(--color-orange); }
+
+.skill-card.green { border-left-color: var(--color-green); }
+.skill-card.green .skill-icon { color: var(--color-green); }
+.skill-card.green .skill-bar { background: var(--color-green); }
+
+.skill-card.yellow { border-left-color: var(--color-yellow); }
+.skill-card.yellow .skill-icon { color: var(--color-yellow); }
+.skill-card.yellow .skill-bar { background: var(--color-yellow); }
+
+
+/* ============================================================
+   17. 超链接样式特调 (Hyperlink Style)
+   ============================================================ */
+
+/* 选中文章内容区域内的所有链接 */
+/* 注意：如果不加 #article-container，会把导航栏和侧边栏的链接也改了，容易乱 */
+#article-container a {
+    
+    /* 1. 颜色：使用你的“工业青”变量 */
+    color: var(--color-orange) !important;
+    
+    /* 2. 下划线设计：去掉默认的丑下划线，改用虚线 */
+    text-decoration: none !important;
+    border-bottom: 1px dashed var(--color-orange); /* 虚线底边，像图纸标注 */
+    
+    /* 3. 细节微调 */
+    font-weight: bold; /*稍微加粗，突出显示 */
+    padding: 0 2px;    /* 左右留一点点呼吸空间 */
+    border-radius: 2px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 鼠标悬停时的交互 (反色高亮) */
+#article-container a:hover {
+    /* 背景变青，文字变米黄 */
+    background-color: var(--font-color) !important;
+    color: var(--global-bg) !important; 
+    
+    /* 去掉底边 */
+    border-bottom: none;
+    
+    /* 稍微圆润一点 */
+    border-radius: 4px;
+    
+    /* 阴影发光，增加电子感 */
+    box-shadow: 0 0 5px var(--color-green);
+}
+
+/* ============================================================
+   18. 页脚特调 (Industrial Footer)
+   ============================================================ */
+
+#footer {
+    /* 1. 背景：深灰/黑 (和卡片边框同色，或者用 --card-border) */
+    background: var(--font-color) !important; 
+    
+    /* 2. 顶部装饰线：绿色 (你的点缀色) */
+    /* 6px 宽的实线，像是一条能量槽 */
+    border-top: 6px solid var(--color-olive) !important;
+    
+    /* 3. 文字颜色：米黄 (在深色背景上要反白) */
+    color: var(--global-bg) !important;
+    
+    /* 4. 间距调整 */
+    margin-top: 40px !important; /* 和上面内容拉开距离 */
+    padding: 40px 20px !important;
+}
+
+/* --- 修复页脚里的链接颜色 --- */
+/* 因为背景变黑了，默认的深色链接会看不见，必须强制变白 */
+#footer a {
+    color: var(--color-olive) !important; /* 链接用绿色，呼应顶条 */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#footer a:hover {
+    color: var(--color-orange) !important; /* 悬停变橙 */
+    text-decoration: underline;
+}
+
+/* --- 去除 Butterfly 默认的遮罩层 --- */
+#footer::before {
+    background: transparent !important;
+}
+
+
+/* ============================================================
+   19. 侧边栏标签特调 (Industrial Tags)
+   ============================================================ */
+#aside-content .card-tag-cloud a {
+    /* 文字颜色：深灰 */
+    color: var(--font-color) !important;
+    /* 边框：使用你的红色变量，做成警戒色的感觉 */
+    border: 1px solid var(--color-red) !important;
+    /* 形状：直角或微圆角 */
+    border-radius: 2px; 
+    padding: 2px 6px;
+    margin: 4px;
+    text-decoration: none !important;
+    /* 字体：小号代码体 */
+    font-family: 'Consolas', monospace;
+    font-size: 0.85em;
+}
+
+/* 悬停时：红底白字，高亮反转 */
+#aside-content .card-tag-cloud a:hover {
+    background: var(--color-red) !important;
+    color: #fff !important;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+/* ============================================================
+   20. 吸顶导航栏样式 (Fixed Navbar)
+   ============================================================ */
+/* 当页面滚动，导航栏固定在顶部时的样式 */
+#page-header.nav-fixed #nav {
+    /* 背景：米黄 */
+    background: var(--card-bg) !important;
+    /* 底部边框：黑色实线 */
+    border-bottom: 2px solid var(--card-border) !important;
+    /* 字体颜色 */
+    color: var(--font-color) !important;
+    /* 阴影 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* 导航栏里的链接文字颜色 */
+#page-header.nav-fixed #nav a {
+    color: var(--font-color) !important;
+    font-family: var(--font-heading) !important;
+}
+
+/* ============================================================
+   21. 全局文字选中特效 (Selection Highlight)
+   ============================================================ */
+::selection {
+    /* 背景：使用你的工业橙，醒目 */
+    background: var(--color-orange) !important;
+    /* 文字：反白 */
+    color: #fff !important;
+}

@@ -96,9 +96,18 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: butterfly
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# Markdown-it config
+markdown:
+  render:
+    html: true             # 【关键】允许 HTML 标签 (包括 )
+    xhtmlOut: false
+    breaks: true
+    linkify: true
+    typographer: true
