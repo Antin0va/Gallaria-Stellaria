@@ -3,7 +3,8 @@
 /* 1. 引入 Google Fonts */
 /* Michroma: 完美的宽体科幻英文字体 (替代 Novecento) */
 /* Noto Sans SC: 思源黑体 (包含 400常规, 500中等, 700粗, 900极粗) */
-@import url('https://fonts.googleapis.com/css2?family=Michroma&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+/* 只加载英文科幻字体，只有几十KB */
+@import url('https://fonts.loli.net/css2?family=Orbitron:wght@400;700;900&display=swap');
 /* 强制背景图固定，不随滚动条滚动，制造视差效果 */
 body {
   background-attachment: fixed !important;
@@ -53,13 +54,14 @@ body {
   --color-red: #9a2d28;
   --color-olive: #beca38; /* 橄榄色，你之前提到的底边色 */
 
-  /* --- 字体系统 --- */
-  /* 标题字体栈：先看有没有 Michroma，没有就用本地无衬线 */
-  /* 中文部分：使用 Noto Sans SC */
-  --font-heading: 'Michroma', 'Noto Sans SC', sans-serif;
+  /* --- 字体系统 (优化版) --- */
   
-  /* 正文字体栈：保证易读性 */
-  --font-body: 'Noto Sans SC', sans-serif;
+  /* 标题：英文用 Orbitron，中文用系统黑体 */
+  /* 顺序：Orbitron -> 苹方(Mac) -> 微软雅黑(Win) ->以此类推 */
+  --font-heading: 'Orbitron', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  
+  /* 正文：直接用系统字体，清晰且快 */
+  --font-body: 'PingFang SC', 'Microsoft YaHei', sans-serif;
 
   /* --- 【新功能】边框粗细控制器 --- */
   /* 你可以在这里单独修改每一条边的粗细 */
